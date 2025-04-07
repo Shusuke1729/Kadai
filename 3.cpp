@@ -71,14 +71,14 @@ int main(void) {
 
 
         } else {
-            auto[service_endtime, num] = window.top(); // 退出した人のサービス終了時間,何番目に来た人か
+            auto[service_endtime, num1] = window.top(); // 退出した人のサービス終了時間,何番目に来た人か
             P.push_back({service_endtime - t , queue.size() + window.size() }); // t秒間にシステム内に人がいたか
             t = window.top().first;
-            wait_time.push_back(t - arrive[num]);
+            wait_time.push_back(t - arrive[num1]);
             window.pop();
             if(!queue.empty()) { 
-                auto[service_time, num] = queue.front(); // 待ち行列の先頭のサービスに要する時間,何番目に来た人か
-                window.push({t + service_time, num});
+                auto[service_time, num2] = queue.front(); // 待ち行列の先頭のサービスに要する時間,何番目に来た人か
+                window.push({t + service_time, num2});
                 queue.pop();
             } 
 
