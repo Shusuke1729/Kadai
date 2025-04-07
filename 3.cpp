@@ -14,11 +14,11 @@ using namespace std;
 
 int main(void) {
     vector<double> arrive;
-    vector<double> serivce;
+    vector<double> service;
     queue<pair<double, int>> queue; //左:サービス時間、何番目に来た人か（待ち行列）
     vector<double> wait_time;
     vector<pair<double, int>> P; // pair<一定時間, 人数>
-    double t = 0.0, serive_endtime = inf;
+    double t = 0.0;
     int i = 0; 
     int m;  //サービス窓口の数
     int not_entered = 0;
@@ -42,26 +42,26 @@ int main(void) {
     file.open("service.txt");
     while(getline(file, line)) {
         double num = stod(line);
-        serivce.push_back(num);
+        service.push_back(num);
     }
     file.close();
 
     
-    while(t <= arrive[arrive.size()-1] && i < serivce.size()) { 
+    while(t <= arrive[arrive.size()-1] && i < service.size()) { 
         if(window.size() == 0) {
             t = arrive[i];
-            window.push({t + serivce[i], i});
+            window.push({t + service[i], i});
             i++;
             continue;
         }
         if(arrive[i] <  window.top().first) {
             P.push_back( {arrive[i] - t, queue.size() + window.size() }); // t秒間にシステム内に人がいたか
             t = arrive[i];
-            if(window.size() <= m) {
-                window.push({t + serivce[i], i});
+            if(window.size() < m) {
+                window.push({t + service[i], i});
             } else {
                 if(queue.size() < 100) {
-                    queue.push({serivce[i], i});
+                    queue.push({service[i], i});
                 } else {
                     not_entered++;
                 }
@@ -71,15 +71,16 @@ int main(void) {
 
 
         } else {
-            P.push_back({window.top().first - t , queue.size() + window.size() }); // t秒間にシステム内に人がいたか
+            auto[service_endtime, num] = window.top(); // 退出した人のサービス終了時間,何番目に来た人か
+            P.push_back({service_endtime - t , queue.size() + window.size() }); // t秒間にシステム内に人がいたか
             t = window.top().first;
-            wait_time.push_back(t - arrive[window.top().second]);
+            wait_time.push_back(t - arrive[num]);
             window.pop();
             if(!queue.empty()) { 
-                window.push({t + queue.front().first, queue.front().second});
+                auto[service_time, num] = queue.front(); // 待ち行列の先頭のサービスに要する時間,何番目に来た人か
+                window.push({t + service_time, num});
                 queue.pop();
             } 
-            cout << "退却" << t << endl;
 
         }
 

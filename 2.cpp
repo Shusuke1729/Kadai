@@ -14,11 +14,11 @@ using namespace std;
 
 int main(void) {
     vector<double> arrive;
-    vector<double> serivce;
+    vector<double> service;
     queue<pair<double, double>> queue; //左側がサービス時間、右側が到着時間
     vector<double> wait_time;
     vector<pair<double, int>> P; // pair<一定時間, 人数>
-    double t = 0.0, serive_endtime = inf;
+    double t = 0.0, service_endtime = inf;
     int i = 0;
     int not_entered = 0;
 
@@ -34,20 +34,20 @@ int main(void) {
     file.open("service.txt");
     while(getline(file, line)) {
         double num = stod(line);
-        serivce.push_back(num);
+        service.push_back(num);
     }
     file.close();
 
     
-    while(t <= arrive[arrive.size()-1] && i < serivce.size()) { 
-        if(arrive[i] <  serive_endtime) {
+    while(t <= arrive[arrive.size()-1] && i < service.size()) { 
+        if(arrive[i] <  service_endtime) {
             P.push_back({arrive[i]-t, queue.size()}); // t秒間にシステム内に人がいたか
             t = arrive[i];
             if(queue.size() < 101) {
                 if(queue.empty()) {
-                    serive_endtime = t + serivce[i];
+                    service_endtime = t + service[i];
                 }
-                queue.push({serivce[i], arrive[i]});
+                queue.push({service[i], arrive[i]});
             } else {
                 not_entered++;
             }
@@ -55,14 +55,14 @@ int main(void) {
 
 
         } else {
-            P.push_back({serive_endtime-t, queue.size()}); // t秒間にシステム内に人がいたか
-            t = serive_endtime;
+            P.push_back({service_endtime-t, queue.size()}); // t秒間にシステム内に人がいたか
+            t = service_endtime;
             wait_time.push_back(t - queue.front().second);
             queue.pop();
             if(!queue.empty()) { 
-                serive_endtime = t + queue.front().first;
+                service_endtime = t + queue.front().first;
             } else {
-                serive_endtime = inf;
+                service_endtime = inf;
             }
             
 

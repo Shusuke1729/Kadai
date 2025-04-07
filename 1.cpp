@@ -14,9 +14,9 @@ using namespace std;
 
 int main(void) {
     vector<double> arrive;
-    vector<double> serivce;
+    vector<double> service;
     queue<double> queue; 
-    double t = 0.0, serive_endtime = inf;
+    double t = 0.0, service_endtime = inf;
     int i = 0;
 
     ifstream file("arrive.txt");
@@ -30,34 +30,33 @@ int main(void) {
     file.open("service.txt");
     while(getline(file, line)) {
         double num = stod(line);
-        serivce.push_back(num);
+        service.push_back(num);
     }
     file.close();
     
     
-    while(t <= arrive[arrive.size()-1] && i < serivce.size()) { 
-        if(arrive[i] <  serive_endtime) {
+    while(t <= arrive[arrive.size()-1] && i < service.size()) { 
+        if(arrive[i] <  service_endtime) {
             t = arrive[i];
             if(queue.size() < 101) {
                 if(queue.empty()) {
-                    serive_endtime = t + serivce[i];
+                    service_endtime = t + service[i];
                 }
-                queue.push(serivce[i]);
+                queue.push(service[i]);
             }
             i++;
 
 
         } else {
-            t = serive_endtime;
+            t = service_endtime;
             queue.pop();
             if(!queue.empty()) { 
-                serive_endtime = t + queue.front();
+                service_endtime = t + queue.front();
             } else {
-                serive_endtime = inf;
+                service_endtime = inf;
             }
         }
     }
-    cout << queue.size() << endl;
 
     // 追加: 結果をファイルに出力
     ofstream output("result1.txt");
