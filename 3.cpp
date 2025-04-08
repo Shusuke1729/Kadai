@@ -48,13 +48,15 @@ int main(void) {
 
     
     while(t <= arrive[arrive.size()-1] && i < service.size()) { 
-        if(window.size() == 0) {
+        if(window.size() == 0 && queue.size() == 0) {
+            P.push_back( {arrive[i]-t, 0} ); // t秒間にシステム内に人がいたか
             t = arrive[i];
             window.push({t + service[i], i});
             i++;
             continue;
         }
         if(arrive[i] <  window.top().first) {
+            
             P.push_back( {arrive[i] - t, queue.size() + window.size() }); // t秒間にシステム内に人がいたか
             t = arrive[i];
             if(window.size() < m) {
@@ -67,13 +69,11 @@ int main(void) {
                 }
             }
             i++;
-
-
-
         } else {
             auto[service_endtime, num1] = window.top(); // 退出した人のサービス終了時間,何番目に来た人か
             P.push_back({service_endtime - t , queue.size() + window.size() }); // t秒間にシステム内に人がいたか
-            t = window.top().first;
+
+            t = service_endtime;
             wait_time.push_back(t - arrive[num1]);
             window.pop();
             if(!queue.empty()) { 
@@ -81,10 +81,7 @@ int main(void) {
                 window.push({t + service_time, num2});
                 queue.pop();
             } 
-
         }
-
-
     }
 
     //システムに入れず退去する割合
@@ -92,7 +89,9 @@ int main(void) {
 
     //平均1秒間にシステム内にいる人数
     double sum = 0;
+    double time_sum = 0;
     rep(i, P.size()) {
+        time_sum += P[i].first;
         sum += P[i].first * P[i].second;
     }
     double average = sum / (double)arrive[arrive.size()-1];
