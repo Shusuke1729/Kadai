@@ -74,7 +74,7 @@ int main(void) {
             P.push_back({service_endtime - t , queue.size() + window.size() }); // t秒間にシステム内に人がいたか
 
             t = service_endtime;
-            wait_time.push_back(t - arrive[num1]);
+            wait_time.push_back(t - arrive[num1] -service[num1]); // サービスを受け始めるまでに各客が待つ時間
             window.pop();
             if(!queue.empty()) { 
                 auto[service_time, num2] = queue.front(); // 待ち行列の先頭のサービスに要する時間,何番目に来た人か
