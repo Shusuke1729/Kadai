@@ -57,7 +57,8 @@ int main(void) {
         } else {
             P.push_back({service_endtime-t, queue.size()}); // t秒間にシステム内に人がいたか
             t = service_endtime;
-            wait_time.push_back(t - queue.front().second);
+            auto[service_time, arrive_time] = queue.front();
+            wait_time.push_back(t - service_time - arrive_time);
             queue.pop();
             if(!queue.empty()) { 
                 service_endtime = t + queue.front().first;
