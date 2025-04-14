@@ -4,8 +4,7 @@
 #include <fstream>
 #include <set>
 #include <queue>
-#include <thread>
-#include <chrono>
+
 #define rep(i, n) for(int i = 0 ; i < (n); i++)
 #define rep2(i, k, n) for(int i = (k); i < (n); i++)
 using ll = long long;
@@ -39,7 +38,7 @@ int main(void) {
     file.close();
 
     
-    while(t <= arrive[arrive.size()-1] && i < service.size()) { 
+    while( i < arrive.size()) { 
         if(arrive[i] <  service_endtime) {
             P.push_back({arrive[i]-t, queue.size()}); // t秒間にシステム内に人がいたか
             t = arrive[i];
@@ -57,7 +56,8 @@ int main(void) {
         } else {
             P.push_back({service_endtime-t, queue.size()}); // t秒間にシステム内に人がいたか
             t = service_endtime;
-            wait_time.push_back(t - queue.front().second);
+            auto[service_time, arrive_time] = queue.front();
+            wait_time.push_back(t - service_time - arrive_time);
             queue.pop();
             if(!queue.empty()) { 
                 service_endtime = t + queue.front().first;
@@ -65,7 +65,6 @@ int main(void) {
                 service_endtime = inf;
             }
             
-
         }
 
     }
