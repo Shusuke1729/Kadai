@@ -4,10 +4,8 @@
 #include <fstream>
 #include <set>
 #include <queue>
-#include <thread>
-#include <chrono>
+
 #define rep(i, n) for(int i = 0 ; i < (n); i++)
-#define rep2(i, k, n) for(int i = (k); i < (n); i++)
 using ll = long long;
 using namespace std;
 #define inf 1e18
@@ -47,7 +45,7 @@ int main(void) {
     file.close();
 
     
-    while(t <= arrive[arrive.size()-1] && i < service.size()) { 
+    while( i < arrive.size()) { 
         if(window.size() == 0 && queue.size() == 0) {
             P.push_back( {arrive[i]-t, 0} ); // t秒間にシステム内に人がいたか
             t = arrive[i];
@@ -74,7 +72,7 @@ int main(void) {
             P.push_back({service_endtime - t , queue.size() + window.size() }); // t秒間にシステム内に人がいたか
 
             t = service_endtime;
-            wait_time.push_back(t - arrive[num1]);
+            wait_time.push_back(t - arrive[num1] -service[num1]); // サービスを受け始めるまでに各客が待つ時間
             window.pop();
             if(!queue.empty()) { 
                 auto[service_time, num2] = queue.front(); // 待ち行列の先頭のサービスに要する時間,何番目に来た人か
@@ -83,15 +81,22 @@ int main(void) {
             } 
         }
     }
+    //システム内にいる人数
+    int num = queue.size()+ window.size(); 
+
+    while(!window.empty()) {
+        auto[service_endtime, num1] = window.top(); // 退出した人のサービス終了時間,何番目に来た人か
+        t = service_endtime;
+        wait_time.push_back(t - arrive[num1] -service[num1]); // サービスを受け始めるまでに各客が待つ時間
+        window.pop();
+    }
 
     //システムに入れず退去する割合
     double not_entered_ratio = (double)not_entered / (double)arrive.size() *100.0;
 
     //平均1秒間にシステム内にいる人数
     double sum = 0;
-    double time_sum = 0;
     rep(i, P.size()) {
-        time_sum += P[i].first;
         sum += P[i].first * P[i].second;
     }
     double average = sum / (double)arrive[arrive.size()-1];
@@ -103,9 +108,13 @@ int main(void) {
     }
     double wait_time_average = (double)wait_time_sum / (double)wait_time.size();
 
+
     // 追加: 結果をファイルに出力
     ofstream output("result3.txt");
+    output << "-------------------------" << endl;
     output << "サービス窓口数" << m << "[個]" <<  endl;
+    output << "-------------------------" << endl;
+    output << "システム内にいる人数" << num << "[人]" << endl;
     output << "-------------------------" << endl;
     output << "システムに入れず退去する割合" << not_entered_ratio << "[%]" <<  endl;
     output << "-------------------------" << endl;
