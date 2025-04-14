@@ -2,12 +2,8 @@
 #include <vector>
 #include <string>
 #include <fstream>
-#include <set>
 #include <queue>
-#include <thread>
-#include <chrono>
 #define rep(i, n) for(int i = 0 ; i < (n); i++)
-#define rep2(i, k, n) for(int i = (k); i < (n); i++)
 using ll = long long;
 using namespace std;
 #define inf 1e18
@@ -45,8 +41,6 @@ int main(void) {
                 queue.push(service[i]);
             }
             i++;
-
-
         } else {
             t = service_endtime;
             queue.pop();
