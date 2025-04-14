@@ -6,7 +6,6 @@
 #include <queue>
 
 #define rep(i, n) for(int i = 0 ; i < (n); i++)
-#define rep2(i, k, n) for(int i = (k); i < (n); i++)
 using ll = long long;
 using namespace std;
 #define inf 1e18
@@ -37,7 +36,6 @@ int main(void) {
     }
     file.close();
 
-    
     while( i < arrive.size()) { 
         if(arrive[i] <  service_endtime) {
             P.push_back({arrive[i]-t, queue.size()}); // t秒間にシステム内に人がいたか
@@ -64,10 +62,10 @@ int main(void) {
             } else {
                 service_endtime = inf;
             }
-            
         }
-
     }
+    auto[service_time, arrive_time] = queue.front();
+    wait_time.push_back(service_endtime - arrive_time - service_time);
 
     //システムに入れず退去する割合
     double not_entered_ratio = (double)not_entered / (double)arrive.size() *100.0;
@@ -80,10 +78,11 @@ int main(void) {
     double average = sum / (double)arrive[arrive.size()-1];
 
     //サービスを受け始めるまでに各客が待つ平均時間
-    ll wait_time_sum = 0;
+    double wait_time_sum = 0;
     rep(i, wait_time.size()) {
-        wait_time_sum += (ll)wait_time[i];
+        wait_time_sum += wait_time[i];
     }
+    cout << wait_time.size() << endl;
     double wait_time_average = (double)wait_time_sum / (double)wait_time.size();
 
     // 追加: 結果をファイルに出力
