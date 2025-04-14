@@ -102,9 +102,9 @@ int main(void) {
     double average = sum / (double)arrive[arrive.size()-1];
 
     //サービスを受け始めるまでに各客が待つ平均時間
-    ll wait_time_sum = 0;
+    double wait_time_sum = 0;
     rep(i, wait_time.size()) {
-        wait_time_sum += (ll)wait_time[i];
+        wait_time_sum += wait_time[i];
     }
     double wait_time_average = (double)wait_time_sum / (double)wait_time.size();
 
