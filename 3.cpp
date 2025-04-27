@@ -1,14 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include <fstream>
-#include <set>
 #include <queue>
-
 #define rep(i, n) for(int i = 0 ; i < (n); i++)
-using ll = long long;
+
 using namespace std;
-#define inf 1e18
 
 int main(void) {
     vector<double> arrive;
@@ -20,7 +16,6 @@ int main(void) {
     int i = 0; 
     int m;  //サービス窓口の数
     int not_entered = 0;
-
 
     cout << "サービス窓口の数を入力してください" << endl;
     cin >> m;
@@ -46,7 +41,7 @@ int main(void) {
 
     
     while( i < arrive.size()) { 
-        if(window.size() == 0 && queue.size() == 0) {
+        if(window.size() == 0) {
             P.push_back( {arrive[i]-t, 0} ); // t秒間にシステム内に人がいたか
             t = arrive[i];
             window.push({t + service[i], i});
@@ -102,12 +97,11 @@ int main(void) {
     double average = sum / (double)arrive[arrive.size()-1];
 
     //サービスを受け始めるまでに各客が待つ平均時間
-    double wait_time_sum = 0;
+    double wait_time_sum = 0.0;
     rep(i, wait_time.size()) {
         wait_time_sum += wait_time[i];
     }
     double wait_time_average = (double)wait_time_sum / (double)wait_time.size();
-
 
     // 追加: 結果をファイルに出力
     ofstream output("result3.txt");
